@@ -35,4 +35,9 @@ public class ObligationController {
         obligationService.deleteObligation(id);
     }
 
+    @PatchMapping("/{id}")
+    public ObligationDto updateStatus(@PathVariable Long id, @RequestBody Map<String, String> body) {
+        return obligationService.updateStatus(id, body.get("status"));
+    }
+
 }
