@@ -57,4 +57,47 @@ public class ObligationService {
         obligationRepository.deleteById(id);
     }
 
+    public ObligationDto updateStatus(Long id, String status) {
+
+        Obligation obligation = obligationRepository.findById(id).orElse(null);
+        if (obligation == null)
+            return null;
+
+        obligation.setStatus(status);
+        Obligation saved = obligationRepository.save(obligation);
+
+        if ("paid".equalsIgnoreCase(status)) {
+
+            if (obligation.getDueDate() != null && obligation.getDuration() != null) {
+
+                String durationStr = obligation.getDuration().trim().toLowerCase();
+                LocalDate nextDueDate = null;
+
+                try {
+                    int months = Integer.parseInt(durationStr);
+                    nextDueDate = obligation.getDueDate().plusMonths(months);
+                } catch (NumberFormatException e) {
+
+                    if (durationStr.contains("quotidien") || durationStr.contains("journalier") || durationStr.contains("daily")) {
+                        nextDueDate = obligation.getDueDate().plusDays(1);
+                    } else if (durationStr.contains("hebdomadaire") || durationStr.contains("weekly")) {
+                        nextDueDate = obligation.getDueDate().plusWeeks(1);
+                    } else if (durationStr.contains("mensuel") || durationStr.contains("monthly")) {
+                        nextDueDate = obligation.getDueDate().plusMonths(1);
+                    } else if (durationStr.contains("annuel") || durationStr.contains("yearly") || durationStr.contains("annual")) {
+                        nextDueDate = obligation.getDueDate().plusYears(1);
+                    }
+                }
+
+                if (nextDueDate != null) {
+                    obligation.setDueDate(nextDueDate);
+                    obligation.setStatus("pending");
+                    saved = obligationRepository.save(obligation);
+                }
+            }
+        }
+
+        return obligationMapper.toDto(saved);
+    }
+
 }
