@@ -19,4 +19,9 @@ public class ObligationController {
     public List<ObligationDto> getAllObligations() {
         return obligationService.getAllObligations();
     }
+
+    @PostMapping
+    public ObligationDto addObligation(@Valid @RequestBody ObligationDto dto) {
+        return obligationService.addObligation(dto);
+    }
 }
