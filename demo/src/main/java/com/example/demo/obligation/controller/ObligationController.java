@@ -29,4 +29,10 @@ public class ObligationController {
     public ObligationDto updateObligation(@PathVariable Long id, @Valid @RequestBody ObligationDto dto) {
         return obligationService.updateObligation(id, dto);
     }
+
+    @DeleteMapping("/{id}")
+    public void deleteObligation(@PathVariable Long id) {
+        obligationService.deleteObligation(id);
+    }
+
 }
