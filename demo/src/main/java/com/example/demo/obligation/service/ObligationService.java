@@ -53,4 +53,8 @@ public class ObligationService {
         return obligationMapper.toDto(saved);
     }
 
+    public void deleteObligation(Long id) {
+        obligationRepository.deleteById(id);
+    }
+
 }
