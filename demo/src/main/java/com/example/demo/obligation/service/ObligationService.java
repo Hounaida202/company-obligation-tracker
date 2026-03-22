@@ -42,5 +42,15 @@ public class ObligationService {
         Obligation saved = obligationRepository.save(obligation);
         return obligationMapper.toDto(saved);
     }
+    public ObligationDto updateObligation(Long id, ObligationDto dto) {
+        if (!obligationRepository.existsById(id))
+            return null;
+
+        Obligation obligation = obligationMapper.toEntity(dto);
+        obligation.setId(id);
+
+        Obligation saved = obligationRepository.save(obligation);
+        return obligationMapper.toDto(saved);
+    }
 
 }
