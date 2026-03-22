@@ -24,4 +24,9 @@ public class ObligationController {
     public ObligationDto addObligation(@Valid @RequestBody ObligationDto dto) {
         return obligationService.addObligation(dto);
     }
+
+    @PutMapping("/{id}")
+    public ObligationDto updateObligation(@PathVariable Long id, @Valid @RequestBody ObligationDto dto) {
+        return obligationService.updateObligation(id, dto);
+    }
 }
