@@ -1,9 +1,7 @@
 package com.example.demo.user.controller;
 
 
-import com.example.demo.user.dto.AuthResponse;
-import com.example.demo.user.dto.LoginRequest;
-import com.example.demo.user.dto.UserDto;
+import com.example.demo.user.dto.*;
 import com.example.demo.user.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,5 +30,16 @@ public class UserController {
         return response != null ? ResponseEntity.ok(response) : ResponseEntity.status(401).build();
     }
 
+    @PutMapping("/change-password")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Void> changePassword(@Valid @RequestBody ChangePasswordRequest request, Principal principal) {
+        userService.changePassword(principal.getName(), request);
+        return ResponseEntity.ok().build();
+    }
 
+    @PutMapping("/profile")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<UserDto> updateProfile(@Valid @RequestBody UpdateProfileRequest request, Principal principal) {
+        return ResponseEntity.ok(userService.updateProfile(principal.getName(), request));
+    }
 }
