@@ -38,5 +38,11 @@ public class AbsenceService {
                 .collect(Collectors.toList());
     }
 
+    public AbsenceDto addAbsence(AbsenceDto dto) {
+        Absence absence = absenceMapper.toEntity(dto);
+        Absence saved = absenceRepository.save(absence);
+        return absenceMapper.toDto(saved);
+    }
+
 
 }
