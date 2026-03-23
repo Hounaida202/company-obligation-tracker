@@ -32,5 +32,11 @@ public class AbsenceService {
                 .collect(Collectors.toList());
     }
 
+    public List<AbsenceDto> getAbsencesByEmployeeId(Long employeeId) {
+        return absenceRepository.findByEmployeeId(employeeId).stream()
+                .map(absenceMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
 
 }
