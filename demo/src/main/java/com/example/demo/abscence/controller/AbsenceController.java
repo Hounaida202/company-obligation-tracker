@@ -27,5 +27,15 @@ public class AbsenceController {
         return absenceService.getAbsencesByEmployeeId(employeeId);
     }
 
+    @PostMapping
+    public AbsenceDto addAbsence(@Valid @RequestBody AbsenceDto dto) {
+        return absenceService.addAbsence(dto);
+    }
+
+    @PatchMapping("/{id}")
+    public AbsenceDto updateStatus(@PathVariable Long id, @RequestBody Map<String, Boolean> body) {
+        return absenceService.updateJustification(id, body.get("justified"));
+    }
+
 
 }
