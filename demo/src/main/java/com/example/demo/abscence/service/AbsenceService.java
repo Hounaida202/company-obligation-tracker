@@ -44,5 +44,15 @@ public class AbsenceService {
         return absenceMapper.toDto(saved);
     }
 
+    public AbsenceDto updateJustification(Long id, Boolean justified) {
+        Absence absence = absenceRepository.findById(id).orElse(null);
+        if (absence == null)
+            return null;
+
+        absence.setJustified(justified);
+        Absence saved = absenceRepository.save(absence);
+        return absenceMapper.toDto(saved);
+    }
+
 
 }
