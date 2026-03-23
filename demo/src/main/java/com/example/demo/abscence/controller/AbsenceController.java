@@ -37,5 +37,8 @@ public class AbsenceController {
         return absenceService.updateJustification(id, body.get("justified"));
     }
 
-
+    @DeleteMapping("/{id}")
+    public void deleteAbsence(@PathVariable Long id) {
+        absenceService.deleteAbsence(id);
+    }
 }
