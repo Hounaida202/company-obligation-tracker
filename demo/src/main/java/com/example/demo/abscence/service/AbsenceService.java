@@ -54,5 +54,7 @@ public class AbsenceService {
         return absenceMapper.toDto(saved);
     }
 
-
+    public void deleteAbsence(Long id) {
+        absenceRepository.deleteById(id);
+    }
 }
