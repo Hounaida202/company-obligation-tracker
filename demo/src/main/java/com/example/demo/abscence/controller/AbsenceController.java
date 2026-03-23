@@ -1,0 +1,26 @@
+package com.example.demo.abscence.controller;
+
+
+import com.example.demo.abscence.dto.AbsenceDto;
+import com.example.demo.abscence.service.AbsenceService;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Map;
+
+@RestController
+@RequestMapping("/absences")
+public class AbsenceController {
+
+    @Autowired
+    private AbsenceService absenceService;
+
+    @GetMapping
+    public List<AbsenceDto> getAllAbsences() {
+        return absenceService.getAllAbsences();
+    }
+
+
+}
