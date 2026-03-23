@@ -22,5 +22,10 @@ public class AbsenceController {
         return absenceService.getAllAbsences();
     }
 
+    @GetMapping("/employee/{employeeId}")
+    public List<AbsenceDto> getAbsencesByEmployeeId(@PathVariable Long employeeId) {
+        return absenceService.getAbsencesByEmployeeId(employeeId);
+    }
+
 
 }
