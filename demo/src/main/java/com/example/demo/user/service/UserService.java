@@ -1,9 +1,8 @@
 package com.example.demo.user.service;
 
 import com.example.demo.common.utils.JwtUtils;
-import com.example.demo.user.dto.AuthResponse;
-import com.example.demo.user.dto.LoginRequest;
-import com.example.demo.user.dto.UserDto;
+import com.example.demo.user.dto.*;
+import com.example.demo.user.entity.User;
 import com.example.demo.user.mapper.UserMapper;
 import com.example.demo.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +34,8 @@ public class UserService {
     @Autowired
     private UserDetailsService userDetailsService;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public List<UserDto> getAllUsers() {
         return userRepository.findAll().stream()
@@ -57,6 +58,28 @@ public class UserService {
                 .token(token)
                 .user(userDto)
                 .build();
+    }
+
+
+    public void changePassword(String username, ChangePasswordRequest request) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("Utilisateur non trouvé"));
+
+        if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
+            throw new IllegalArgumentException("L'ancien mot de passe est incorrect");
+        }
+
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        userRepository.save(user);
+    }
+
+    public UserDto updateProfile(String username, UpdateProfileRequest request) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("Utilisateur non trouvé"));
+
+        user.setName(request.getName());
+        userRepository.save(user);
+        return userMapper.toDto(user);
     }
 
 
