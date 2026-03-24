@@ -1,6 +1,9 @@
 package com.example.demo.employee.service;
 
+import com.example.demo.abscence.entity.Absence;
+import com.example.demo.abscence.repository.AbsenceRepository;
 import com.example.demo.employee.dto.EmployeeDto;
+import com.example.demo.employee.dto.EmployeeSalaryDto;
 import com.example.demo.employee.entity.Employee;
 import com.example.demo.employee.mapper.EmployeeMapper;
 import com.example.demo.employee.repository.EmployeeRepository;
@@ -28,6 +31,9 @@ public class EmployeeService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private AbsenceRepository absenceRepository;
 
     public List<EmployeeDto> getAllEmployees() {
         return employeeRepository.findAll().stream()
@@ -96,6 +102,37 @@ public class EmployeeService {
     public void deleteEmployee(Long id) {
 
         employeeRepository.deleteById(id);
+    }
+
+    public EmployeeSalaryDto getEmployeeSalary(Long id) {
+        Employee employee = employeeRepository.findById(id).orElse(null);
+        if (employee == null)
+            return null;
+
+        List<Absence> absences = absenceRepository.findByEmployeeId(id);
+
+        double baseHourlyRate = employee.getBaseSalary() / 160.0;
+        double basePerMinute = baseHourlyRate / 60.0;
+
+        double deduction = 0;
+        int monthCount = 0;
+        int currentMonth = java.time.LocalDate.now().getMonthValue();
+
+        for (Absence abs : absences) {
+            if (abs.getDate() != null && abs.getDate().getMonthValue() == currentMonth) {
+                monthCount++;
+            }
+            if (abs.getJustified() != null && !abs.getJustified()) {
+                deduction += abs.getDurationMinutes() * basePerMinute;
+            }
+        }
+
+        return EmployeeSalaryDto.builder()
+                .baseSalary(employee.getBaseSalary())
+                .totalDeduction(deduction)
+                .netSalary(employee.getBaseSalary() - deduction)
+                .absencesCountThisMonth(monthCount)
+                .build();
     }
 
 
