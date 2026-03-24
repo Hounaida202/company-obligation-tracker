@@ -33,4 +33,7 @@ public class EmployeeDto {
     @DecimalMin(value = "0.0", inclusive = false, message = "Le salaire doit être supérieur à 0")
     private Double baseSalary;
 
+    private String generatedUsername;
+    private String generatedPassword;
+
 }
