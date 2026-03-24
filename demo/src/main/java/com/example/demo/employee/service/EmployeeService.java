@@ -93,6 +93,11 @@ public class EmployeeService {
         return employeeMapper.toDto(saved);
     }
 
+    public void deleteEmployee(Long id) {
+
+        employeeRepository.deleteById(id);
+    }
+
 
 
 }
