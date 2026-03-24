@@ -84,6 +84,15 @@ public class EmployeeService {
         return result;
     }
 
+    public EmployeeDto updateEmployee(Long id, EmployeeDto dto) {
+        if (!employeeRepository.existsById(id))
+            return null;
+        Employee employee = employeeMapper.toEntity(dto);
+        employee.setId(id);
+        Employee saved = employeeRepository.save(employee);
+        return employeeMapper.toDto(saved);
+    }
+
 
 
 }
