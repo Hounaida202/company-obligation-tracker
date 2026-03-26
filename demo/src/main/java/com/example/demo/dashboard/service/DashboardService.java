@@ -44,6 +44,10 @@ public class DashboardService {
     public DashboardStatsDto getStats() {
 
         List<Obligation> obligations = obligationRepository.findAll();
+        long activeObligations = obligations.stream()
+                .filter(o -> !"paid".equalsIgnoreCase(o.getStatus()))
+                .count();
+
        }
 
      }
