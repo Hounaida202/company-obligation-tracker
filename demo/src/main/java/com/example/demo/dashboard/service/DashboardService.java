@@ -125,4 +125,6 @@ public class DashboardService {
         }
 
 
+        List<JobCategory> categories = jobCategoryRepository.findAll();
+
     }
