@@ -57,4 +57,16 @@ public class DashboardService {
                 .count();
 
 
+        double totalMonthly = obligations.stream()
+                .mapToDouble(o -> o.getAmount() != null ? o.getAmount() : 0.0)
+                .sum();
+
+
+        int activeMonth = today.getMonthValue();
+        int activeYear = today.getYear();
+
+
+
+
+
      }
