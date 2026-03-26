@@ -5,6 +5,7 @@ import com.example.demo.abscence.dto.AbsenceDto;
 import com.example.demo.abscence.service.AbsenceService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,6 +19,7 @@ public class AbsenceController {
     private AbsenceService absenceService;
 
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public List<AbsenceDto> getAllAbsences() {
         return absenceService.getAllAbsences();
     }
