@@ -102,7 +102,6 @@ public class DashboardService {
         List<History> monthlyHistory = historyRepository.findByPaymentDateBetween(startOfMonth, endOfMonth);
 
 
-
         for (History h : monthlyHistory) {
             paidAmountThisMonth += h.getAmount() != null ? h.getAmount() : 0.0;
             totalAmountThisMonth += h.getAmount() != null ? h.getAmount() : 0.0;
@@ -126,7 +125,6 @@ public class DashboardService {
 
 
         List<JobCategory> categories = jobCategoryRepository.findAll();
-
 
 
         for (JobCategory cat : categories) {
@@ -160,5 +158,19 @@ public class DashboardService {
             }
         }
 
+
+        return DashboardStatsDto.builder()
+                .totalEmployees(employeeRepository.count())
+                .activeObligations(activeObligations)
+                .totalMonthlyObligations(totalMonthly)
+                .upcomingAlerts(upcoming)
+                .totalAmountThisMonth(totalAmountThisMonth)
+                .paidAmountThisMonth(paidAmountThisMonth)
+                .obligationsCountThisMonth(obligationsCountThisMonth)
+                .todayPending(todayPending)
+                .todayPaid(todayPaid)
+                .monthTable(monthTable)
+                .build();
+    }
 
     }
