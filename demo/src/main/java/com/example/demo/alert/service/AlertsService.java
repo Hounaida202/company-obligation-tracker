@@ -46,6 +46,18 @@ public class AlertsService {
 
         LocalDate today = LocalDate.now();
         LocalDate soonThreshold = today.plusDays(5);
+
+        List<ObligationDto> overdue = all.stream()
+                .filter(o -> !isPaid(o))
+                .filter(o -> o.getDueDate() != null && o.getDueDate().isBefore(today))
+                .map(o -> {
+                    ObligationDto dto = obligationMapper.toDto(o);
+                    dto.setType("OBLIGATION");
+                    return dto;
+                })
+                .collect(Collectors.toList());
+
+
     }
 
     private boolean isPaid(Obligation o) {
