@@ -44,6 +44,7 @@ public class EmployeeController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public void deleteEmployee(@PathVariable Long id) {
         employeeService.deleteEmployee(id);
     }
