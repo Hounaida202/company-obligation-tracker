@@ -38,6 +38,7 @@ public class EmployeeController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public EmployeeDto updateEmployee(@PathVariable Long id, @Valid @RequestBody EmployeeDto dto) {
         return employeeService.updateEmployee(id, dto);
     }
