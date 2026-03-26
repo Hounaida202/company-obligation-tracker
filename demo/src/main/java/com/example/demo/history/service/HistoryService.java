@@ -25,5 +25,9 @@ public class HistoryService {
                 .collect(Collectors.toList());
     }
 
-
+    public HistoryDto saveHistory(HistoryDto historyDto) {
+        History entity = historyMapper.toEntity(historyDto);
+        History saved = historyRepository.save(entity);
+        return historyMapper.toDto(saved);
+    }
 }
