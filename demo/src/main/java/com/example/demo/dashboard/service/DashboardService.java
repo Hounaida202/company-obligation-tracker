@@ -43,4 +43,7 @@ public class DashboardService {
 
     public DashboardStatsDto getStats() {
 
+        List<Obligation> obligations = obligationRepository.findAll();
+       }
+
      }
