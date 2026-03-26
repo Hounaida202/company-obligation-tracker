@@ -25,6 +25,7 @@ public class AbsenceController {
     }
 
     @GetMapping("/employee/{employeeId}")
+    @PreAuthorize("hasRole('ADMIN') or (hasRole('EMPLOYEE') and @employeeService.isOwner(#employeeId, principal.username))")
     public List<AbsenceDto> getAbsencesByEmployeeId(@PathVariable Long employeeId) {
         return absenceService.getAbsencesByEmployeeId(employeeId);
     }
