@@ -7,6 +7,10 @@ import com.example.demo.employee.dto.EmployeeSalaryDto;
 import com.example.demo.employee.entity.Employee;
 import com.example.demo.employee.mapper.EmployeeMapper;
 import com.example.demo.employee.repository.EmployeeRepository;
+import com.example.demo.history.entity.History;
+import com.example.demo.history.repository.HistoryRepository;
+import com.example.demo.jobCategory.entity.JobCategory;
+import com.example.demo.jobCategory.repository.JobCategoryRepository;
 import com.example.demo.user.entity.User;
 import com.example.demo.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -34,6 +39,13 @@ public class EmployeeService {
 
     @Autowired
     private AbsenceRepository absenceRepository;
+
+    @Autowired
+    private HistoryRepository historyRepository;
+
+    @Autowired
+    private JobCategoryRepository jobCategoryRepository;
+
 
     public List<EmployeeDto> getAllEmployees() {
         return employeeRepository.findAll().stream()
@@ -133,6 +145,30 @@ public class EmployeeService {
                 .netSalary(employee.getBaseSalary() - deduction)
                 .absencesCountThisMonth(monthCount)
                 .build();
+    }
+
+    public void payCategoryThisMonth(Long categoryId) {
+        JobCategory category = jobCategoryRepository.findById(categoryId)
+                .orElseThrow(() -> new RuntimeException("Category not found"));
+
+        double totalCatSalary = employeeRepository.findByJobId(categoryId).stream()
+                .map(emp -> Optional.ofNullable(getEmployeeSalary(emp.getId()))
+                        .map(EmployeeSalaryDto::getNetSalary)
+                        .orElse(0.0))
+                .mapToDouble(Double::doubleValue)
+                .sum();
+
+        if (totalCatSalary > 0) {
+            History history = History.builder()
+                    .type("EMPLOYEE_CATEGORY")
+                    .referenceId(categoryId)
+                    .title("Salaires - " + category.getName())
+                    .amount(totalCatSalary)
+                    .currency("MAD")
+                    .paymentDate(java.time.LocalDate.now())
+                    .build();
+            historyRepository.save(history);
+        }
     }
 
 
