@@ -4,6 +4,7 @@ package com.example.demo.dashboard.controller;
 import com.example.demo.dashboard.dto.DashboardStatsDto;
 import com.example.demo.dashboard.service.DashboardService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,6 +17,7 @@ public class DashboardController {
     private DashboardService dashboardService;
 
     @GetMapping("/stats")
+    @PreAuthorize("hasRole('ADMIN')")
     public DashboardStatsDto getStats() {
         return dashboardService.getStats();
     }
