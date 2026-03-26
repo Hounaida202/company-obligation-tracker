@@ -41,7 +41,11 @@ public class AlertsService {
     @Autowired
     private EmployeeService employeeService;
 
+    public AlertsDto getAlerts() {
+        List<Obligation> all = obligationRepository.findAll();
 
+
+    }
 
     private boolean isPaid(Obligation o) {
         return "paid".equalsIgnoreCase(o.getStatus());
