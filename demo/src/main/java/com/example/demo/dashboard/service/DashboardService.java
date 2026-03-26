@@ -66,6 +66,12 @@ public class DashboardService {
         int activeYear = today.getYear();
 
 
+        double totalAmountThisMonth = 0.0;
+        double paidAmountThisMonth = 0.0;
+        long obligationsCountThisMonth = 0;
+
+
+
 
 
 
