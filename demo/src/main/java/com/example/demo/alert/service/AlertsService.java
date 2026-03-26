@@ -57,7 +57,17 @@ public class AlertsService {
                 })
                 .collect(Collectors.toList());
 
-
+        List<ObligationDto> upcoming = all.stream()
+                .filter(o -> !isPaid(o))
+                .filter(o -> o.getDueDate() != null
+                        && !o.getDueDate().isBefore(today)
+                        && !o.getDueDate().isAfter(soonThreshold))
+                .map(o -> {
+                    ObligationDto dto = obligationMapper.toDto(o);
+                    dto.setType("OBLIGATION");
+                    return dto;
+                })
+                .collect(Collectors.toList());
     }
 
     private boolean isPaid(Obligation o) {
