@@ -100,6 +100,10 @@ public class AlertsService {
                 }
             }
         }
+        return AlertsDto.builder()
+                .upcoming(upcoming)
+                .overdue(overdue)
+                .build();
     }
 
     private boolean isPaid(Obligation o) {
