@@ -56,6 +56,7 @@ public class EmployeeController {
     }
 
     @PostMapping("/category/{categoryId}/pay")
+    @PreAuthorize("hasRole('ADMIN')")
     public void payCategory(@PathVariable Long categoryId) {
         employeeService.payCategoryThisMonth(categoryId);
     }
