@@ -71,6 +71,9 @@ public class DashboardService {
         long obligationsCountThisMonth = 0;
 
 
+        List<ObligationDto> todayPending = new ArrayList<>();
+        List<ObligationDto> todayPaid = new ArrayList<>();
+        List<ObligationDto> monthTable = new ArrayList<>();
 
 
 
