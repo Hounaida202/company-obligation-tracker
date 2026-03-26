@@ -31,6 +31,7 @@ public class AbsenceController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public AbsenceDto addAbsence(@Valid @RequestBody AbsenceDto dto) {
         return absenceService.addAbsence(dto);
     }
