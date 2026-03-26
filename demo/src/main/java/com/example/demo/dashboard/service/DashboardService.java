@@ -102,4 +102,27 @@ public class DashboardService {
         List<History> monthlyHistory = historyRepository.findByPaymentDateBetween(startOfMonth, endOfMonth);
 
 
+
+        for (History h : monthlyHistory) {
+            paidAmountThisMonth += h.getAmount() != null ? h.getAmount() : 0.0;
+            totalAmountThisMonth += h.getAmount() != null ? h.getAmount() : 0.0;
+            obligationsCountThisMonth++;
+
+            ObligationDto paidDto = new ObligationDto();
+            paidDto.setId(h.getReferenceId());
+            paidDto.setTitle(h.getTitle());
+            paidDto.setAmount(h.getAmount());
+            paidDto.setCurrency(h.getCurrency());
+            paidDto.setStatus("paid");
+            paidDto.setType(h.getType());
+            paidDto.setDueDate(h.getPaymentDate() != null ? h.getPaymentDate().toString() : today.toString());
+
+            monthTable.add(paidDto);
+
+            if (h.getPaymentDate() != null && h.getPaymentDate().isEqual(today)) {
+                todayPaid.add(paidDto);
+            }
+        }
+
+
     }
