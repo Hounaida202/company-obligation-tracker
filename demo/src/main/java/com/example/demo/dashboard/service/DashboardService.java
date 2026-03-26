@@ -127,4 +127,15 @@ public class DashboardService {
 
         List<JobCategory> categories = jobCategoryRepository.findAll();
 
+
+
+        for (JobCategory cat : categories) {
+
+            boolean alreadyPaid = monthlyHistory.stream()
+                    .anyMatch(h -> "EMPLOYEE_CATEGORY".equals(h.getType()) && h.getReferenceId().equals(cat.getId()));
+
+
+        }
+
+
     }
