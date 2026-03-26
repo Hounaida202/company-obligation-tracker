@@ -37,11 +37,15 @@ public class AbsenceController {
     }
 
     @PatchMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+
     public AbsenceDto updateStatus(@PathVariable Long id, @RequestBody Map<String, Boolean> body) {
         return absenceService.updateJustification(id, body.get("justified"));
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+
     public void deleteAbsence(@PathVariable Long id) {
         absenceService.deleteAbsence(id);
     }
