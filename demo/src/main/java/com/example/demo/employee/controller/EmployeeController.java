@@ -32,6 +32,7 @@ public class EmployeeController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public EmployeeDto addEmployee(@Valid @RequestBody EmployeeDto dto) {
         return employeeService.addEmployee(dto);
     }
