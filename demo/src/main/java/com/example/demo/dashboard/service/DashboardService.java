@@ -48,6 +48,16 @@ public class DashboardService {
                 .filter(o -> !"paid".equalsIgnoreCase(o.getStatus()))
                 .count();
 
+        LocalDate today = LocalDate.now();
+
+        int activeMonth = today.getMonthValue();
+        int activeYear = today.getYear();
+        double totalMonthly = obligations.stream()
+                .filter(o -> o.getDueDate() != null
+                        && o.getDueDate().getMonthValue() == activeMonth
+                        && o.getDueDate().getYear() == activeYear)
+                .mapToDouble(o -> o.getAmount() != null ? o.getAmount() : 0.0)
+                .sum();
        }
 
      }
