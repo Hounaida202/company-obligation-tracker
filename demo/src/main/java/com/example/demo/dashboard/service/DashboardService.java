@@ -75,7 +75,29 @@ public class DashboardService {
         List<ObligationDto> todayPaid = new ArrayList<>();
         List<ObligationDto> monthTable = new ArrayList<>();
 
+        for (Obligation ob : obligations) {
+            if ("paid".equalsIgnoreCase(ob.getStatus())) continue;
+
+            LocalDate dueDate = ob.getDueDate();
+            if (dueDate == null) continue;
+
+            boolean isToday = dueDate.isEqual(today);
+            boolean isThisMonth = dueDate.getMonthValue() == activeMonth && dueDate.getYear() == activeYear;
+
+            ObligationDto dto = obligationMapper.toDto(ob);
+            dto.setType("OBLIGATION");
+
+            if (isThisMonth) {
+                monthTable.add(dto);
+                totalAmountThisMonth += ob.getAmount() != null ? ob.getAmount() : 0.0;
+                obligationsCountThisMonth++;
+            }
+
+            if (isToday) {
+                todayPending.add(dto);
+            }
+        }
 
 
 
-     }
+    }
