@@ -50,6 +50,7 @@ public class EmployeeController {
     }
 
     @GetMapping("/{id}/salary")
+    @PreAuthorize("hasRole('ADMIN') or (hasRole('EMPLOYEE') and @employeeService.isOwner(#id, principal.username))")
     public EmployeeSalaryDto getEmployeeSalary(@PathVariable Long id) {
         return employeeService.getEmployeeSalary(id);
     }
