@@ -20,6 +20,8 @@ public class EmployeeController {
     private EmployeeService employeeService;
 
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
+
     public List<EmployeeDto> getAllEmployees() {
         return employeeService.getAllEmployees();
     }
