@@ -68,6 +68,12 @@ public class AlertsService {
                     return dto;
                 })
                 .collect(Collectors.toList());
+
+        LocalDate startOfMonth = today.withDayOfMonth(1);
+        LocalDate endOfMonth = today.withDayOfMonth(today.lengthOfMonth());
+        List<History> monthlyHistory = historyRepository.findByPaymentDateBetween(startOfMonth, endOfMonth);
+
+
     }
 
     private boolean isPaid(Obligation o) {
