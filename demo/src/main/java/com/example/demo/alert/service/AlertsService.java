@@ -44,7 +44,8 @@ public class AlertsService {
     public AlertsDto getAlerts() {
         List<Obligation> all = obligationRepository.findAll();
 
-
+        LocalDate today = LocalDate.now();
+        LocalDate soonThreshold = today.plusDays(5);
     }
 
     private boolean isPaid(Obligation o) {
