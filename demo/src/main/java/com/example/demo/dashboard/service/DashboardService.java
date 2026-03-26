@@ -134,7 +134,30 @@ public class DashboardService {
             boolean alreadyPaid = monthlyHistory.stream()
                     .anyMatch(h -> "EMPLOYEE_CATEGORY".equals(h.getType()) && h.getReferenceId().equals(cat.getId()));
 
+            if (!alreadyPaid) {
+                double totalCatSalary = employeeRepository.findByJobId(cat.getId()).stream()
+                        .map(emp -> Optional.ofNullable(employeeService.getEmployeeSalary(emp.getId()))
+                                .map(EmployeeSalaryDto::getNetSalary)
+                                .orElse(0.0))
+                        .mapToDouble(Double::doubleValue)
+                        .sum();
 
+                if (totalCatSalary > 0) {
+                    ObligationDto virtualOb = new ObligationDto();
+                    virtualOb.setId(cat.getId());
+                    virtualOb.setTitle("Salaires - " + cat.getName());
+                    virtualOb.setAmount(totalCatSalary);
+                    virtualOb.setCurrency("MAD");
+                    virtualOb.setStatus("pending");
+                    virtualOb.setType("EMPLOYEE_CATEGORY");
+                    virtualOb.setDueDate(today.toString());
+
+                    monthTable.add(virtualOb);
+                    todayPending.add(virtualOb);
+                    totalAmountThisMonth += totalCatSalary;
+                    obligationsCountThisMonth++;
+                }
+            }
         }
 
 
