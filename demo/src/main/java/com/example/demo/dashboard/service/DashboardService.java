@@ -1,0 +1,4 @@
+package com.example.demo.dashboard.service;
+
+public class DashboardService {
+}
