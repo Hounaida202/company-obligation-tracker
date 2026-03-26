@@ -49,15 +49,12 @@ public class DashboardService {
                 .count();
 
         LocalDate today = LocalDate.now();
+        LocalDate soon = today.plusDays(5);
 
-        int activeMonth = today.getMonthValue();
-        int activeYear = today.getYear();
-        double totalMonthly = obligations.stream()
-                .filter(o -> o.getDueDate() != null
-                        && o.getDueDate().getMonthValue() == activeMonth
-                        && o.getDueDate().getYear() == activeYear)
-                .mapToDouble(o -> o.getAmount() != null ? o.getAmount() : 0.0)
-                .sum();
-       }
+        int upcoming = (int) obligations.stream()
+                .filter(o -> o.getDueDate() != null && o.getDueDate().isBefore(soon)
+                        && !"paid".equalsIgnoreCase(o.getStatus()))
+                .count();
+
 
      }
