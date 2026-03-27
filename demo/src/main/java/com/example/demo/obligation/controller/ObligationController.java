@@ -23,21 +23,25 @@ public class ObligationController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ObligationDto addObligation(@Valid @RequestBody ObligationDto dto) {
         return obligationService.addObligation(dto);
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ObligationDto updateObligation(@PathVariable Long id, @Valid @RequestBody ObligationDto dto) {
         return obligationService.updateObligation(id, dto);
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public void deleteObligation(@PathVariable Long id) {
         obligationService.deleteObligation(id);
     }
 
     @PatchMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ObligationDto updateStatus(@PathVariable Long id, @RequestBody Map<String, String> body) {
         return obligationService.updateStatus(id, body.get("status"));
     }
