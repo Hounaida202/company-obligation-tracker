@@ -4,6 +4,7 @@ import com.example.demo.obligation.dto.ObligationDto;
 import com.example.demo.obligation.service.ObligationService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +17,7 @@ public class ObligationController {
     private ObligationService obligationService;
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYEE')")
     public List<ObligationDto> getAllObligations() {
         return obligationService.getAllObligations();
     }
