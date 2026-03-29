@@ -59,12 +59,12 @@ Le projet repose sur une modélisation UML rigoureuse pour assurer la cohérence
 ### Diagramme des Cas d'Utilisation
 Ce diagramme illustre les interactions possibles entre les acteurs du système et les différentes fonctionnalités.
 
-![Diagramme de Cas d'Utilisation](![COT-usecases-diagramme.jpg](umls/COT-usecases-diagramme.jpg))
+![Diagramme de Cas d'Utilisation](demo/umls/COT-usecases-diagramme.jpg)
 
 ### Diagramme de Classes
 Ce diagramme détaille la structure des données et les relations entre les entités (Obligation, Employé, Alerte, Historique).
 
-![Diagramme de Classes](![COT-classes-diagramme.jpg](umls/COT-classes-diagramme.jpg))
+![Diagramme de Classes](demo/umls/COT-classes-diagramme.jpg)
 
 ---
 
