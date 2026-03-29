@@ -1,5 +1,7 @@
 package com.example.demo.obligation.service;
 
+import com.example.demo.history.entity.History;
+import com.example.demo.history.repository.HistoryRepository;
 import com.example.demo.obligation.dto.ObligationDto;
 import com.example.demo.obligation.entity.Obligation;
 import com.example.demo.obligation.mapper.ObligationMapper;
@@ -19,7 +21,8 @@ public class ObligationService {
 
     @Autowired
     private ObligationMapper obligationMapper;
-
+    @Autowired
+    private HistoryRepository historyRepository;
 
     public List<ObligationDto> getAllObligations() {
         return obligationRepository.findAll().stream()
@@ -58,18 +61,24 @@ public class ObligationService {
     }
 
     public ObligationDto updateStatus(Long id, String status) {
-
         Obligation obligation = obligationRepository.findById(id).orElse(null);
         if (obligation == null)
             return null;
-
         obligation.setStatus(status);
         Obligation saved = obligationRepository.save(obligation);
 
         if ("paid".equalsIgnoreCase(status)) {
+            History history = History.builder()
+                    .type("OBLIGATION")
+                    .referenceId(obligation.getId())
+                    .title(obligation.getTitle())
+                    .amount(obligation.getAmount())
+                    .currency(obligation.getCurrency())
+                    .paymentDate(LocalDate.now())
+                    .build();
+            historyRepository.save(history);
 
             if (obligation.getDueDate() != null && obligation.getDuration() != null) {
-
                 String durationStr = obligation.getDuration().trim().toLowerCase();
                 LocalDate nextDueDate = null;
 
@@ -77,7 +86,6 @@ public class ObligationService {
                     int months = Integer.parseInt(durationStr);
                     nextDueDate = obligation.getDueDate().plusMonths(months);
                 } catch (NumberFormatException e) {
-
                     if (durationStr.contains("quotidien") || durationStr.contains("journalier") || durationStr.contains("daily")) {
                         nextDueDate = obligation.getDueDate().plusDays(1);
                     } else if (durationStr.contains("hebdomadaire") || durationStr.contains("weekly")) {
@@ -99,5 +107,4 @@ public class ObligationService {
 
         return obligationMapper.toDto(saved);
     }
-
 }
