@@ -64,7 +64,7 @@ Ce diagramme illustre les interactions possibles entre les acteurs du système e
 ### Diagramme de Classes
 Ce diagramme détaille la structure des données et les relations entre les entités (Obligation, Employé, Alerte, Historique).
 
-![Diagramme de Classes](demo/umls/COT-classes-diagramme.jpg)
+![Diagramme de Classes](demo/umls/Capture%20d’écran_29-3-2026_0133_miro.com.jpeg)
 
 ---
 
