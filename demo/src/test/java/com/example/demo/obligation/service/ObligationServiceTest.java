@@ -1,5 +1,6 @@
 package com.example.demo.obligation.service;
 
+import com.example.demo.history.repository.HistoryRepository;
 import com.example.demo.obligation.dto.ObligationDto;
 import com.example.demo.obligation.entity.Obligation;
 import com.example.demo.obligation.mapper.ObligationMapper;
@@ -26,8 +27,11 @@ class ObligationServiceTest {
     @Mock
     private ObligationMapper obligationMapper;
 
+    @Mock
+    private HistoryRepository historyRepository; // corrigé
+
     @InjectMocks
-    private ObligationService obligationService;
+    private ObligationService obligationService; // pas @Autowired
 
     @BeforeEach
     void setUp() {
@@ -54,7 +58,7 @@ class ObligationServiceTest {
     @Test
     void testAddObligation() {
         ObligationDto dto = new ObligationDto();
-        dto.setDuration("1"); // 1 mois
+        dto.setDuration("1");
         Obligation entity = new Obligation();
         Obligation savedEntity = new Obligation();
         ObligationDto savedDto = new ObligationDto();
@@ -72,19 +76,27 @@ class ObligationServiceTest {
     @Test
     void testUpdateStatusPaid() {
         Obligation ob = new Obligation();
+        ob.setId(1L);
         ob.setDueDate(LocalDate.now());
         ob.setDuration("1");
-        ObligationDto dto = new ObligationDto();
-        Obligation savedOb = new Obligation();
+        ob.setStatus("pending");
+        ob.setTitle("Test Title");
+        ob.setAmount(100.0);
+        ob.setCurrency("USD");
+
         ObligationDto savedDto = new ObligationDto();
 
         when(obligationRepository.findById(1L)).thenReturn(Optional.of(ob));
-        when(obligationRepository.save(any(Obligation.class))).thenReturn(savedOb);
-        when(obligationMapper.toDto(savedOb)).thenReturn(savedDto);
+        when(obligationRepository.save(any(Obligation.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(obligationMapper.toDto(any(Obligation.class))).thenReturn(savedDto);
 
         ObligationDto result = obligationService.updateStatus(1L, "paid");
 
         assertNotNull(result);
+        assertEquals("pending", ob.getStatus());
+        assertNotNull(ob.getDueDate());
+
         verify(obligationRepository, atLeastOnce()).save(any(Obligation.class));
+        verify(historyRepository, times(1)).save(any());
     }
 }
