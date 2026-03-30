@@ -30,6 +30,10 @@ public class ObligationService {
                 .collect(Collectors.toList());
     }
 
+
+
+
+
     public ObligationDto addObligation(ObligationDto dto) {
         dto.setFirstStarted(LocalDate.now().toString());
 
@@ -45,6 +49,9 @@ public class ObligationService {
         Obligation saved = obligationRepository.save(obligation);
         return obligationMapper.toDto(saved);
     }
+
+
+
     public ObligationDto updateObligation(Long id, ObligationDto dto) {
         if (!obligationRepository.existsById(id))
             return null;
@@ -55,6 +62,10 @@ public class ObligationService {
         Obligation saved = obligationRepository.save(obligation);
         return obligationMapper.toDto(saved);
     }
+
+
+
+
 
     public void deleteObligation(Long id) {
         obligationRepository.deleteById(id);
