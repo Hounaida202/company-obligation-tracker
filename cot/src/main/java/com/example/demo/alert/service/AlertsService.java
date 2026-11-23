@@ -1,0 +1,112 @@
+package com.example.demo.alert.service;
+
+import com.example.demo.alert.dto.AlertsDto;
+import com.example.demo.employee.dto.EmployeeSalaryDto;
+import com.example.demo.employee.repository.EmployeeRepository;
+import com.example.demo.employee.service.EmployeeService;
+import com.example.demo.history.entity.History;
+import com.example.demo.history.repository.HistoryRepository;
+import com.example.demo.jobCategory.entity.JobCategory;
+import com.example.demo.jobCategory.repository.JobCategoryRepository;
+import com.example.demo.obligation.dto.ObligationDto;
+import com.example.demo.obligation.entity.Obligation;
+import com.example.demo.obligation.mapper.ObligationMapper;
+import com.example.demo.obligation.repository.ObligationRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+@Service
+public class AlertsService {
+
+    @Autowired
+    private ObligationRepository obligationRepository;
+
+    @Autowired
+    private ObligationMapper obligationMapper;
+
+    @Autowired
+    private HistoryRepository historyRepository;
+
+    @Autowired
+    private JobCategoryRepository jobCategoryRepository;
+
+    @Autowired
+    private EmployeeRepository employeeRepository;
+
+    @Autowired
+    private EmployeeService employeeService;
+
+    public AlertsDto getAlerts() {
+        List<Obligation> all = obligationRepository.findAll();
+
+        LocalDate today = LocalDate.now();
+        LocalDate soonThreshold = today.plusDays(5);
+
+        List<ObligationDto> overdue = all.stream()
+                .filter(o -> !isPaid(o))
+                .filter(o -> o.getDueDate() != null && o.getDueDate().isBefore(today))
+                .map(o -> {
+                    ObligationDto dto = obligationMapper.toDto(o);
+                    dto.setType("OBLIGATION");
+                    return dto;
+                })
+                .collect(Collectors.toList());
+
+        List<ObligationDto> upcoming = all.stream()
+                .filter(o -> !isPaid(o))
+                .filter(o -> o.getDueDate() != null
+                        && !o.getDueDate().isBefore(today)
+                        && !o.getDueDate().isAfter(soonThreshold))
+                .map(o -> {
+                    ObligationDto dto = obligationMapper.toDto(o);
+                    dto.setType("OBLIGATION");
+                    return dto;
+                })
+                .collect(Collectors.toList());
+
+        LocalDate startOfMonth = today.withDayOfMonth(1);
+        LocalDate endOfMonth = today.withDayOfMonth(today.lengthOfMonth());
+        List<History> monthlyHistory = historyRepository.findByPaymentDateBetween(startOfMonth, endOfMonth);
+
+        List<JobCategory> categories = jobCategoryRepository.findAll();
+        for (JobCategory cat : categories) {
+            boolean alreadyPaid = monthlyHistory.stream()
+                    .anyMatch(h -> "EMPLOYEE_CATEGORY".equals(h.getType()) && h.getReferenceId().equals(cat.getId()));
+
+            if (!alreadyPaid) {
+                double totalCatSalary = employeeRepository.findByJobId(cat.getId()).stream()
+                        .map(emp -> Optional.ofNullable(employeeService.getEmployeeSalary(emp.getId()))
+                                .map(EmployeeSalaryDto::getNetSalary)
+                                .orElse(0.0))
+                        .mapToDouble(Double::doubleValue)
+                        .sum();
+
+                if (totalCatSalary > 0) {
+                    ObligationDto virtualOb = new ObligationDto();
+                    virtualOb.setId(cat.getId());
+                    virtualOb.setTitle("Salaires - " + cat.getName());
+                    virtualOb.setAmount(totalCatSalary);
+                    virtualOb.setCurrency("MAD");
+                    virtualOb.setStatus("pending");
+                    virtualOb.setType("EMPLOYEE_CATEGORY");
+                    virtualOb.setDueDate(today.toString());
+
+                    upcoming.add(virtualOb);
+                }
+            }
+        }
+        return AlertsDto.builder()
+                .upcoming(upcoming)
+                .overdue(overdue)
+                .build();
+    }
+
+    private boolean isPaid(Obligation o) {
+        return "paid".equalsIgnoreCase(o.getStatus());
+    }
+}
